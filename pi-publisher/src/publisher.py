@@ -31,6 +31,9 @@ def main():
     sample_interval = config['sample_interval']
     
     client = mqtt.Client()
+    if 'username' in config and 'password' in config:
+        client.username_pw_set(config['username'], config['password'])
+    
     try:
         client.connect(broker_addr, broker_port)
         client.loop_start()
