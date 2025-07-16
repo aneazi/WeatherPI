@@ -1,16 +1,21 @@
-# Use an ARM‑compatible Python base
 FROM arm32v7/python:3.8-slim
 
-# Set working directory
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install runtime dependencies via apt
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        python3-paho-mqtt \
+        python3-yaml \
+        python3-sense-hat \
+        i2c-tools \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-# Install Python dependencies
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
-
 # Copy config and source code
-COPY config.yaml ./
-COPY src/ ./src
+COPY myconfig.yaml ./
+COPY src/ ./src/
 
-# Run the publisher script
-CMD ["python", "src/publisher.py"]
+# Launch the publisher script
+CMD ["python3", "src/publisher.py"]
