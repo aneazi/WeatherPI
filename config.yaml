@@ -1,3 +1,4 @@
-broker_url: "mqtt://localhost:1883"
+broker_url: "localhost"
+port: 1883
 topic: "pi/weather_data"
 sample_interval: 3

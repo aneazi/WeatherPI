@@ -1,20 +1,41 @@
 import time
 import json
+import signal
+import sys
 import paho.mqtt.client as mqtt
 from utils import load_config, setup_logging
 from sensors import SensorReader
 
+client = None
+
+def signal_handler(sig, frame):
+    print('\nShutting down gracefully...')
+    if client:
+        client.loop_stop()
+        client.disconnect()
+    sys.exit(0)
 
 def main():
+    global client
+    
     config = load_config("config.yaml")
     setup_logging()
+    
+    # Set up signal handlers
+    signal.signal(signal.SIGINT, signal_handler) # Ctrl+C
+    signal.signal(signal.SIGTERM, signal_handler) # Termination signal
+    
     broker_addr = config['broker_url']
+    broker_port = config['port']
     topic = config['topic']
     sample_interval = config['sample_interval']
     
     client = mqtt.Client()
     try:
-        client.connect(broker_addr)
+        client.connect(broker_addr, broker_port)
+        client.loop_start()
+        print(f"Connected to MQTT broker at {broker_addr}:{broker_port}")
+        print("Press Ctrl+C to stop...")
     except Exception as e:
         print(f"Failed to connect to MQTT broker: {e}")
         return

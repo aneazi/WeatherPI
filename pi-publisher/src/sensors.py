@@ -1,4 +1,6 @@
 from sense_hat import SenseHat
+import datetime
+
 
 class SensorReader:
     def __init__(self):
@@ -15,7 +17,8 @@ class SensorReader:
     
     def get_all_data(self):
         return {
-            'temperature': (self.get_temperature() * 9.0 / 5.0) + 32,  # Convert to Fahrenheit
+            'timestamp': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            'temperature': self.get_temperature(),
             'humidity': self.get_humidity(),
             'pressure': self.get_pressure()
         }
