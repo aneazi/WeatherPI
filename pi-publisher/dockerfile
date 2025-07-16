@@ -7,7 +7,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         python3-paho-mqtt \
         python3-yaml \
-        python3-sense-hat \
+        sense-hat \
         i2c-tools \
     && rm -rf /var/lib/apt/lists/*
 
