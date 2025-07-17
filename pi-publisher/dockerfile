@@ -29,7 +29,7 @@ RUN pip3 install --no-cache-dir sense-hat
 WORKDIR /app
 
 # Copy configuration and source code
-COPY config.yaml ./
+COPY myconfig.yaml ./
 COPY src/ ./src/
 
 # Launch the publisher script
