@@ -1,10 +1,13 @@
 # WeatherPI
 
-How to start container (from pi-publisher dir):
+## On Raspberry Pi
+How to build publisher container (from pi-publisher dir):
+```
 sudo docker build -t pi-publisher:latest .
+```
 
-
-How to run container (from pi-publisher dir):
+How to run publisher container (from pi-publisher dir):
+```
 sudo docker run -d \
   --name pi-publisher \
   --restart unless-stopped \
@@ -15,3 +18,4 @@ sudo docker run -d \
   -v $(pwd)/myconfig.yaml:/app/myconfig.yaml:ro \
   -v $(pwd)/src:/app/src:ro \
   pi-publisher:latest
+```
