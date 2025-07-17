@@ -20,7 +20,6 @@ def main():
     
     config = load_config("myconfig.yaml")
     setup_logging()
-    print("Test")
     # Set up signal handlers
     signal.signal(signal.SIGINT, signal_handler) # Ctrl+C
     signal.signal(signal.SIGTERM, signal_handler) # Termination signal
