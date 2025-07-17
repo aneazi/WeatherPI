@@ -1,11 +1,11 @@
 # WeatherPI
 
 How to start container (from pi-publisher dir):
-docker build -t pi-publisher:latest .
+sudo docker build -t pi-publisher:latest .
 
 
 How to run container (from pi-publisher dir):
-docker run -d \
+sudo docker run -d \
   --name pi-publisher \
   --restart unless-stopped \
   --device /dev/i2c-1:/dev/i2c-1 \

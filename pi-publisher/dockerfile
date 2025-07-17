@@ -3,32 +3,38 @@ FROM arm32v7/python:3.8-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install runtime and build dependencies
+# Install runtime and build dependencies, including RTIMU and Pillow prerequisites
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         build-essential \
         python3-dev \
+        python3-rtimulib \
+        librtimulib1 \
         python3-yaml \
         python3-smbus \
         i2c-tools \
-        python3-pip \
         libjpeg-dev \
         zlib1g-dev \
         libtiff5-dev \
         libfreetype6-dev \
+        libwebp-dev \
         libopenjp2-7-dev \
         libatlas-base-dev \
         gfortran \
     && rm -rf /var/lib/apt/lists/*
 
-# Install the Sense HAT Python library via pip
-RUN pip3 install --no-cache-dir sense-hat paho-mqtt PyYAML
+# Install required Python packages via pip
+RUN pip3 install --no-cache-dir \
+    sense-hat \
+    paho-mqtt \
+    PyYAML \
+    pillow
 
 # Set working directory
 WORKDIR /app
 
 # Copy configuration and source code
-COPY myconfig.yaml ./
+COPY myconfig.yaml ./myconfig.yaml
 COPY src/ ./src/
 
 # Launch the publisher script
