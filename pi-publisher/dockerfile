@@ -1,19 +1,26 @@
+# Use an ARM-compatible Python base image
 FROM arm32v7/python:3.8-slim
 
+# Avoid interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install runtime dependencies via apt
+# Install MQTT, YAML, I2C support, and pip
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         python3-paho-mqtt \
         python3-yaml \
-        sense-hat \
+        python3-smbus \
         i2c-tools \
+        python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
+# Install the Sense HAT Python library via pip
+RUN pip3 install --no-cache-dir sense-hat
+
+# Set working directory
 WORKDIR /app
 
-# Copy config and source code
+# Copy configuration and source code
 COPY myconfig.yaml ./
 COPY src/ ./src/
 
