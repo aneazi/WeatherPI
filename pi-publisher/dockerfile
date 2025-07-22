@@ -34,13 +34,16 @@ RUN pip3 install --no-cache-dir \
 RUN git clone https://github.com/RPi-Distro/RTIMULib.git /tmp/RTIMULib && \
     cd /tmp/RTIMULib/Linux/python && \
     pip3 install --no-cache-dir . && \
-    cd / && \
     rm -rf /tmp/RTIMULib
 
-# 4) Copy your app in
+# 4) Set working directory
 WORKDIR /app
-COPY myconfig.yaml ./myconfig.yaml
-COPY pi-publisher/src/ ./src/
 
-# 5) Run your publisher
-CMD ["python3", "-u", "pi-publisher/src/publisher.py"]
+# 5) Copy in your default config (optional, overridden by bind‑mount)
+COPY myconfig.yaml ./myconfig.yaml
+
+# 6) Copy in your source code (overridden by bind‑mount if you choose)
+COPY src/ ./src/
+
+# 7) Run your publisher (referencing the path inside /app)
+CMD ["python3", "-u", "src/publisher.py"]
