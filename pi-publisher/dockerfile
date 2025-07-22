@@ -43,4 +43,4 @@ COPY myconfig.yaml ./myconfig.yaml
 COPY pi-publisher/src/ ./src/
 
 # 5) Run your publisher
-CMD ["python3", "src/publisher.py"]
+CMD ["python3", "-u", "pi-publisher/src/publisher.py"]
