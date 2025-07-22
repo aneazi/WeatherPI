@@ -2,7 +2,7 @@ import time
 import json
 import signal
 import sys
-#import paho.mqtt.client as mqtt
+import paho.mqtt.client as mqtt
 from utils import load_config, setup_logging
 from sensors import SensorReader
 

@@ -3,7 +3,7 @@
 ## On Raspberry Pi
 How to build publisher container (from pi-publisher dir):
 ```
-sudo docker build \
+docker build \
   -t pi-publisher:latest \
   -f pi-publisher/Dockerfile \
   .
@@ -12,11 +12,11 @@ sudo docker build \
 
 How to run publisher container (from root dir):
 ```
-sudo docker run -d \
+docker run -d \
   --name pi-publisher \
   --restart unless-stopped \
   --privileged \
-  -v $(pwd)/myconfig.yaml:/app/myconfig.yaml:ro \
-  -v $(pwd)/src:/app/src:ro \
+  -v $(pwd)/myconfig.yaml:/app/config.yaml:ro \
+  -v $(pwd)/pi-publisher/src:/app/src:ro \
   pi-publisher:latest
 ```
