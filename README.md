@@ -20,3 +20,8 @@ docker run -d \
   -v $(pwd)/pi-publisher/src:/app/src:ro \
   pi-publisher:latest
 ```
+
+How to start publisher container:
+```
+docker start pi-publisher
+```
