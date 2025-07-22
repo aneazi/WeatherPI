@@ -1,6 +1,0 @@
-broker_url: "localhost"
-port: 1883
-topic: "pi/weather_data"
-sample_interval: 3
-username: "name"
-password: "password"

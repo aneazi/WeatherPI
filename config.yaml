@@ -1,0 +1,13 @@
+broker_url: "localhost"
+port: 1883
+
+raw_topic: "pi/weather_data"
+anomaly_topic: "pi/weather_anomalies"
+
+dashboard_port: 5000
+buffer_size: 200
+log_csv: true
+
+sample_interval: 3
+username: "name"
+password: "password"

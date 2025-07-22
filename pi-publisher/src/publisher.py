@@ -18,7 +18,7 @@ def signal_handler(sig, frame):
 def main():
     global client
     
-    config = load_config("myconfig.yaml")
+    config = load_config("../myconfig.yaml")
     setup_logging()
     # Set up signal handlers
     signal.signal(signal.SIGINT, signal_handler) # Ctrl+C
@@ -26,7 +26,7 @@ def main():
     
     broker_addr = config['broker_url']
     broker_port = config['port']
-    topic = config['topic']
+    topic = config['raw_topic']
     sample_interval = config['sample_interval']
     
     client = mqtt.Client()
