@@ -4,4 +4,3 @@ myconfig.yaml
 *.log
 *.pyc
 weather_data.csv
-rm
