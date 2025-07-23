@@ -5,11 +5,16 @@ import paho.mqtt.client as mqtt
 from datetime import datetime
 from dateutil import tz
 import logging
+import os
 
 UTC = tz.tzutc()
 MST = tz.gettz("America/Phoenix")
 
 def start_subscriber(config, buffer):
+    # Get the directory where the script is running from
+    CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+    PROJECT_ROOT = os.path.dirname(CURRENT_DIR)  # weather-dashboard directory
+    
     if config.get("terminal_output", True):
         logging.basicConfig(
         level=logging.INFO,
@@ -17,9 +22,11 @@ def start_subscriber(config, buffer):
         datefmt="%Y-%m-%d %H:%M:%S"
         )
     if config.get("log_csv"):
-        data_dir = Path("weather-dashboard/data")
-        csv_path=data_dir / "weather_data.csv"
-        if not csv_path.exists():
+        data_dir = os.path.join(PROJECT_ROOT, "data")
+        csv_path = os.path.join(data_dir, "weather_data.csv")
+        # Create data directory if it doesn't exist
+        os.makedirs(data_dir, exist_ok=True)
+        if not os.path.exists(csv_path):
             with open(csv_path, 'w', newline='') as f:
                 writer = csv.writer(f)
                 writer.writerow(["timestamp", "temperature", "humidity", "pressure"])
@@ -35,7 +42,7 @@ def start_subscriber(config, buffer):
             if dt.tzinfo is None:
                 dt = dt.replace(tzinfo=UTC)
         else:
-            dt = datetime.utcnow().replace(tzinfo=UTC)
+            dt = datetime.now(datetime.timezone.utc).replace(tzinfo=UTC)
         dt_mst = dt.astimezone(MST)
         ts_mst = dt_mst.strftime("%Y-%m-%d %H:%M:%S")
         entry = {
