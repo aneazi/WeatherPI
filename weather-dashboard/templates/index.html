@@ -11,20 +11,22 @@
 <body>
   <header><h1>Real-Time Weather Dashboard</h1></header>
 
-  <main class="grid">
-    <section>
-      <h2>Temperature (°C)</h2>
-      <canvas id="tempChart"></canvas>
-    </section>
-    <section>
-      <h2>Humidity (%)</h2>
-      <canvas id="humChart"></canvas>
-    </section>
-    <section>
-      <h2>Pressure (hPa)</h2>
-      <canvas id="presChart"></canvas>
-    </section>
-  </main>
+<main>
+  <section id="tempSection">
+    <h2>Temperature (°C)</h2>
+    <canvas id="tempChart"></canvas>
+  </section>
+
+  <section id="humSection">
+    <h2>Humidity (%)</h2>
+    <canvas id="humChart"></canvas>
+  </section>
+
+  <section id="presSection">
+    <h2>Pressure (hPa)</h2>
+    <canvas id="presChart"></canvas>
+  </section>
+</main>
 
   <script src="{{ url_for('static', filename='js/chart-setup.js') }}"></script>
 </body>

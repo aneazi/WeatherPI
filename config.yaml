@@ -9,7 +9,7 @@ buffer_size: 200
 log_csv: true
 terminal_output: true
 
-sample_interval: 3
+sample_interval: 1
 
 #OPTIONAL
 username: "name"

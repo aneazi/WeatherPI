@@ -18,15 +18,26 @@ header {
 }
 
 main {
-  flex: 1;
+  /* define a 2×2 grid and name the areas */
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "temp hum"
+    "pres .";    /* pressure spans both columns on second row */
   gap: 1.5rem;
   padding: 1rem;
   overflow-y: auto;
+  align-items: start;   /* prevent vertical stretching */
 }
 
+#tempSection { grid-area: temp; }
+#humSection  { grid-area: hum;  }
+#presSection { grid-area: pres; }
+
 section {
+  min-height: 340px;
+  align-self: start;
   background: #fafafa;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
@@ -36,5 +47,5 @@ section {
 
 section canvas {
   width: 100% !important;
-  height: 250px !important;
+  height: 275px !important;
 }

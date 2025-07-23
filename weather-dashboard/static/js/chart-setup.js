@@ -42,13 +42,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const ts = rows.map(r => r.timestamp);
 
       // Update each chart independently
-      tempChart.data.labels       = ts;
+      tempChart.data.labels = ts;
       tempChart.data.datasets[0].data = rows.map(r => r.temperature);
 
-      humChart.data.labels        = ts;
+      humChart.data.labels = ts;
       humChart.data.datasets[0].data  = rows.map(r => r.humidity);
 
-      presChart.data.labels       = ts;
+      presChart.data.labels = ts;
       presChart.data.datasets[0].data = rows.map(r => r.pressure);
 
       tempChart.update();
@@ -60,5 +60,5 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   fetchData();               // initial load
-  setInterval(fetchData, 1000); // refresh each second
+  setInterval(fetchData, 1000); // refresh each 10 seconds
 });
