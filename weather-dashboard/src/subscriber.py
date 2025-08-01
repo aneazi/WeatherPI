@@ -1,5 +1,5 @@
 import json
-import csv
+import sqlite3
 from pathlib import Path
 import paho.mqtt.client as mqtt
 from datetime import datetime
@@ -14,22 +14,27 @@ def start_subscriber(config, buffer):
     # Get the directory where the script is running from
     CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
     PROJECT_ROOT = os.path.dirname(CURRENT_DIR)  # weather-dashboard directory
-    
     if config.get("terminal_output", True):
         logging.basicConfig(
         level=logging.INFO,
         format="[%(asctime)s] %(levelname)s %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S"
         )
-    if config.get("log_csv"):
-        data_dir = os.path.join(PROJECT_ROOT, "data")
-        csv_path = os.path.join(data_dir, "weather_data.csv")
+    if config.get("log_sqlite"):
+        db_path = os.path.join(PROJECT_ROOT, "data", "weather.db")
         # Create data directory if it doesn't exist
-        os.makedirs(data_dir, exist_ok=True)
-        if not os.path.exists(csv_path):
-            with open(csv_path, 'w', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow(["timestamp", "temperature", "humidity", "pressure"])
+        os.makedirs(os.path.dirname(db_path), exist_ok=True)
+        conn = sqlite3.connect(db_path, check_same_thread=False)
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS weather_data (
+                timestamp TEXT,
+                temperature REAL,
+                humidity REAL,
+                pressure REAL
+            )
+        ''')
+        conn.commit()
                 
     def on_connect(client, userdata, flags, rc):
         client.subscribe(config['raw_topic'])
@@ -53,11 +58,15 @@ def start_subscriber(config, buffer):
         }
         buffer.append(entry)
         if config.get("terminal_output", True):
-            logging.info(f"Received on `{msg.topic}` → {entry}")
-        if config.get("log_csv"):
-            with open(csv_path, 'a', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow([entry["timestamp"], entry["temperature"], entry["humidity"], entry["pressure"]])
+            logging.info(f"Received on {msg.topic} → {entry}")
+        if config.get("log_sqlite"):
+            conn = sqlite3.connect(os.path.join(PROJECT_ROOT, "data", "weather.db"))
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT or REPLACE INTO weather_data (timestamp, temperature, humidity, pressure)
+                VALUES (?, ?, ?, ?)
+            ''', (entry["timestamp"], entry["temperature"], entry["humidity"], entry["pressure"]))
+            conn.commit()
 
 
     client = mqtt.Client()

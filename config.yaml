@@ -6,7 +6,7 @@ anomaly_topic: "pi/weather_anomalies"
 
 dashboard_port: 5000
 buffer_size: 200
-log_csv: true
+log_sqlite: true
 terminal_output: true
 
 sample_interval: 1

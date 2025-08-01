@@ -4,3 +4,4 @@ myconfig.yaml
 *.log
 *.pyc
 weather_data.csv
+weather.db*
