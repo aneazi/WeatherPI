@@ -7,7 +7,6 @@ docker build \
   -t pi-publisher:latest \
   -f pi-publisher/Dockerfile \
   .
-
 ```
 
 How to run publisher container (from root dir):
