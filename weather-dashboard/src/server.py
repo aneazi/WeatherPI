@@ -12,7 +12,7 @@ PROJECT_ROOT = os.path.dirname(CURRENT_DIR)  # weather-dashboard directory
 config = load_config("myconfig.yaml")
 
 data_dir = os.path.join(PROJECT_ROOT, "data")
-DB_PATH = os.path.join(data_dir, "weather.db")
+DB_PATH = os.path.join(data_dir, "weather_anomalies.db")
 
 # Ensure data directory exists
 if config.get("log_sqlite"):
@@ -48,7 +48,7 @@ def data():
         cursor = conn.cursor()
         cursor.execute(
             """
-            SELECT timestamp, temperature, humidity, pressure
+            SELECT *
               FROM weather_data
              ORDER BY timestamp DESC
              LIMIT ?

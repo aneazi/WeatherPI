@@ -1,14 +1,22 @@
 import json
-import sqlite3
+import os, sys
 from pathlib import Path
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PROJECT_ROOT))
+import sqlite3
 import paho.mqtt.client as mqtt
 from datetime import datetime
 from dateutil import tz
 import logging
-import os
+import joblib
+import pandas as pd
+from model_training.feature_utils import prepare_data
 
 UTC = tz.tzutc()
 MST = tz.gettz("America/Phoenix")
+model_path = Path("model_training/models/isolation_forest.joblib")
+model = joblib.load(model_path) if model_path.exists() else None
+
 
 def start_subscriber(config, buffer):
     # Get the directory where the script is running from
@@ -21,7 +29,7 @@ def start_subscriber(config, buffer):
         datefmt="%Y-%m-%d %H:%M:%S"
         )
     if config.get("log_sqlite"):
-        db_path = os.path.join(PROJECT_ROOT, "data", "weather.db")
+        db_path = os.path.join(PROJECT_ROOT, "data", "weather_anomalies.db")
         # Create data directory if it doesn't exist
         os.makedirs(os.path.dirname(db_path), exist_ok=True)
         conn = sqlite3.connect(db_path, check_same_thread=False)
@@ -31,7 +39,8 @@ def start_subscriber(config, buffer):
                 timestamp TEXT,
                 temperature REAL,
                 humidity REAL,
-                pressure REAL
+                pressure REAL,
+                is_anomaly INTEGER DEFAULT 0
             )
         ''')
         conn.commit()
@@ -56,16 +65,22 @@ def start_subscriber(config, buffer):
             "humidity": payload.get("humidity"),
             "pressure": payload.get("pressure")
         }
+        df_all = pd.DataFrame(list(buffer) + [entry])
+        df_features = prepare_data(df_all)
+        X_all = df_features.drop(columns=["timestamp", "is_anomaly"], errors='ignore')
+        latest = X_all.iloc[[-1]]
+        pred = model.predict(latest)[0] if model else None
+        is_anomaly = int(pred == -1) if model else None
+        entry["is_anomaly"] = is_anomaly
         buffer.append(entry)
+        
         if config.get("terminal_output", True):
             logging.info(f"Received on {msg.topic} → {entry}")
         if config.get("log_sqlite"):
-            conn = sqlite3.connect(os.path.join(PROJECT_ROOT, "data", "weather.db"))
-            cursor = conn.cursor()
             cursor.execute('''
-                INSERT or REPLACE INTO weather_data (timestamp, temperature, humidity, pressure)
-                VALUES (?, ?, ?, ?)
-            ''', (entry["timestamp"], entry["temperature"], entry["humidity"], entry["pressure"]))
+                INSERT or REPLACE INTO weather_data (timestamp, temperature, humidity, pressure, is_anomaly)
+                VALUES (?, ?, ?, ?, ?)
+            ''', (entry["timestamp"], entry["temperature"], entry["humidity"], entry["pressure"], entry["is_anomaly"]))
             conn.commit()
 
 
