@@ -3,7 +3,8 @@ __pycache__/
 myconfig.yaml
 *.log
 *.pyc
-weather_data.csv
 weather.*
+weather_anomalies.*
 .DS_Store
 test.*
+rm/
