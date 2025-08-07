@@ -1,6 +1,3 @@
-// static/js/chart-setup.js
-
-// Register needed components once (Chart.js v4)
 Chart.register(
   Chart.TimeScale,
   Chart.LineController,

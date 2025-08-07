@@ -4,7 +4,7 @@ import pandas as pd
 from pathlib import Path
 import joblib
 from sklearn.ensemble import IsolationForest
-
+import time
 
 def load_data(db_path: Path) -> pd.DataFrame:
     conn = sqlite3.connect(db_path)
@@ -31,7 +31,10 @@ def train_model(train_df: pd.DataFrame) -> IsolationForest:
 
 def evaluate_model(model: IsolationForest, test_df: pd.DataFrame) -> pd.Series:
     Y_df = test_df.drop(columns=["timestamp"])
+    t0 = time.perf_counter()
     predictions = model.predict(Y_df)
+    latency_ms = (time.perf_counter() - t0) * 1000
+    print(f"Model inference latency: {latency_ms:.2f} ms")
     return pd.Series(predictions, index=test_df.index)
 
 def save_model(model: IsolationForest, model_path: Path):
@@ -47,7 +50,7 @@ def main():
     model = train_model(train_df)
     predictions = evaluate_model(model, test_df)
     model_path.parent.mkdir(parents=True, exist_ok=True)
-    save_model(model, model_path)
+    #save_model(model, model_path)
     print("Model training complete. Predictions on test set:")
     print(predictions.value_counts())
 

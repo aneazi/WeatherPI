@@ -1,4 +1,4 @@
-broker_url: "localhost"
+broker_url: "raspberrypi.local"
 port: 1883
 
 raw_topic: "pi/weather_data"
@@ -11,6 +11,6 @@ terminal_output: true
 
 sample_interval: 1
 
-#OPTIONAL
-username: "name"
-password: "password"
+# OPTIONAL
+# username: "name"
+# password: "password"

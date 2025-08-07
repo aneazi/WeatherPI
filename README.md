@@ -1,26 +1,33 @@
 # WeatherPI
 
+
+
+## Configs
+Set the user configs in [config.yaml](config.yaml).
+
 ## On Raspberry Pi
-How to build publisher container (from pi-publisher dir):
+How to build publisher container (from project root dir):
 ```
 docker build \
-  -t pi-publisher:latest \
-  -f pi-publisher/Dockerfile \
+  -t pi_publisher:latest \
+  -f pi_publisher/Dockerfile \
   .
 ```
 
 How to run publisher container (from root dir):
 ```
 docker run -d \
-  --name pi-publisher \
+  --name pi_publisher \
   --restart unless-stopped \
   --privileged \
-  -v $(pwd)/myconfig.yaml:/app/config.yaml:ro \
-  -v $(pwd)/pi-publisher/src:/app/src:ro \
-  pi-publisher:latest
+  -v $(pwd)/config.yaml:/app/config.yaml:ro \
+  -v $(pwd)/pi_publisher/src:/app/src:ro \
+  pi_publisher:latest
 ```
 
 How to start publisher container:
 ```
-docker start pi-publisher
+docker start pi_publisher
 ```
+
+## On Local Device for Anomaly Detection
