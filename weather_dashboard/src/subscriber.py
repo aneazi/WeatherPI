@@ -29,7 +29,7 @@ def start_subscriber(config, buffer):
         datefmt="%Y-%m-%d %H:%M:%S"
         )
     if config.get("log_sqlite"):
-        db_path = os.path.join(PROJECT_ROOT, "data", "weather_anomalies.db")
+        db_path = os.path.join(PROJECT_ROOT, "data", config.get("db_name"))
         # Create data directory if it doesn't exist
         os.makedirs(os.path.dirname(db_path), exist_ok=True)
         conn = sqlite3.connect(db_path, check_same_thread=False)

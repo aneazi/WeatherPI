@@ -5,6 +5,17 @@ from pathlib import Path
 import joblib
 from sklearn.ensemble import IsolationForest
 import time
+import os
+import yaml
+
+def load_config(path: str) -> dict:
+    # If path is not absolute, assume it's relative to the current working directory
+    if not os.path.isabs(path):
+        path = os.path.join(os.getcwd(), path)
+    
+    with open(path, 'r') as file:
+        return yaml.safe_load(file)
+
 
 def load_data(db_path: Path) -> pd.DataFrame:
     conn = sqlite3.connect(db_path)
@@ -41,7 +52,8 @@ def save_model(model: IsolationForest, model_path: Path):
     joblib.dump(model, model_path)
     
 def main():
-    db_path = Path("weather-dashboard/data/weather.db")
+    config = load_config("myconfig.yaml")
+    db_path = os.path.join("weather_dashboard/data", config.get("db_name"))
     model_path = Path("model_training/models/isolation_forest.joblib")
     df = load_data(db_path)
     df = preprocess_data(df)
