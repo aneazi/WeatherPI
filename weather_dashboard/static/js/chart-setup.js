@@ -9,6 +9,25 @@ Chart.register(
   Chart.CategoryScale
 );
 
+// Ensure charts use JetBrains Mono to match the app CSS
+const FONT_FAMILY = `'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace`;
+Chart.defaults.font.family = FONT_FAMILY;
+
+// Use CSS variables to style chart axes so they contrast with dark backgrounds
+const cssVars = getComputedStyle(document.documentElement);
+const TEXT_COLOR = (cssVars.getPropertyValue('--text') || '#e5e7eb').trim();
+const MUTED_COLOR = (cssVars.getPropertyValue('--muted') || '#9ca3af').trim();
+
+function hexToRGBA(hex, alpha = 1) {
+  let c = hex.replace('#', '').trim();
+  if (c.length === 3) c = c.split('').map(ch => ch + ch).join('');
+  const num = parseInt(c, 16);
+  const r = (num >> 16) & 255;
+  const g = (num >> 8) & 255;
+  const b = num & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 const chartCfg = (label, color) => ({
   type: "line",
   data: {
@@ -31,8 +50,8 @@ const chartCfg = (label, color) => ({
         type: "scatter",
         data: [],
         showLine: false,
-        pointBackgroundColor: "red",
-        pointRadius: 6
+        pointBackgroundColor: "#9e0000ff",
+        pointRadius: 5.5
       }
     ]
   },
@@ -42,23 +61,40 @@ const chartCfg = (label, color) => ({
       duration: 1000,
       easing: 'easeInOutQuart'
     },
+    plugins: {
+      legend: {
+        labels: { color: TEXT_COLOR }
+      }
+    },
     scales: {
       x: {
         type: "time",
         time: { parser: "yyyy-MM-dd HH:mm:ss", tooltipFormat: "PPpp" },
-        title: { display: true, text: "Time (MST)" }
+        title: { display: true, text: "Time (MST)", color: TEXT_COLOR },
+        ticks: { color: TEXT_COLOR },
+        grid: {
+          color: hexToRGBA(MUTED_COLOR, 0.25),
+          borderColor: hexToRGBA(MUTED_COLOR, 0.5)
+        }
       },
-      y: { title: { display: true, text: label } }
+      y: {
+        title: { display: true, text: label, color: TEXT_COLOR },
+        ticks: { color: TEXT_COLOR },
+        grid: {
+          color: hexToRGBA(MUTED_COLOR, 0.25),
+          borderColor: hexToRGBA(MUTED_COLOR, 0.5)
+        }
+      }
     }
   }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
   // initialize charts with an anomaly dataset built in
-  const tempChart = new Chart(document.getElementById("tempChart"), chartCfg("Temperature (°F)", "purple"));
-  const humChart = new Chart(document.getElementById("humChart"), chartCfg("Humidity (%)", "blue"));
-  const presChart = new Chart(document.getElementById("presChart"), chartCfg("Pressure (hPa)", "green"));
-  const anomalyChart = new Chart(document.getElementById("anomalyChart"), chartCfg("Anomaly Score", "orange"));
+  const tempChart = new Chart(document.getElementById("tempChart"), chartCfg("Temperature (°F)", '#701f5fff'));
+  const humChart = new Chart(document.getElementById("humChart"), chartCfg("Humidity (%)", "#2563eb"));
+  const presChart = new Chart(document.getElementById("presChart"), chartCfg("Pressure (hPa)", "#189044ff"));
+  const anomalyChart = new Chart(document.getElementById("anomalyChart"), chartCfg("Anomaly Score", "#fba364ff"));
 
   async function fetchData() {
     try {
