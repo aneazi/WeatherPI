@@ -2,7 +2,7 @@ import pandas as pd
 import sqlite3
 import numpy as np
 from pathlib import Path
-import math
+
 def convert_to_datetime(df: pd.DataFrame) -> pd.DataFrame:
     if "timestamp" in df.columns:
         df["timestamp"] = pd.to_datetime(df["timestamp"], errors='coerce')
@@ -24,7 +24,7 @@ def encode_timestamp(df: pd.DataFrame) -> pd.DataFrame:
         minute = df["timestamp"].dt.minute
         second = df["timestamp"].dt.second
         fraction_of_day = (hour * 3600 + minute * 60 + second) / 86400.0
-        angle = fraction_of_day * 2 * math.pi
+        angle = fraction_of_day * 2 * np.pi
         sin_timestamp = np.sin(angle)
         cos_timestamp = np.cos(angle)
         df["sin_timestamp"] = sin_timestamp.astype(np.float32)

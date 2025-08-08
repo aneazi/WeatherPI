@@ -19,7 +19,7 @@ def load_config(path: str) -> dict:
 
 def load_data(db_path: Path) -> pd.DataFrame:
     conn = sqlite3.connect(db_path)
-    df = pd.read_sql_query("SELECT * FROM weather_data", conn)
+    df = pd.read_sql_query("SELECT timestamp, temperature, pressure, humidity FROM weather_data", conn)
     conn.close()
     return df
 
@@ -62,7 +62,7 @@ def main():
     model = train_model(train_df)
     predictions = evaluate_model(model, test_df)
     model_path.parent.mkdir(parents=True, exist_ok=True)
-    #save_model(model, model_path)
+    save_model(model, model_path)
     print("Model training complete. Predictions on test set:")
     print(predictions.value_counts())
 
