@@ -55,9 +55,10 @@ const chartCfg = (label, color) => ({
 
 document.addEventListener("DOMContentLoaded", () => {
   // initialize charts with an anomaly dataset built in
-  const tempChart = new Chart(document.getElementById("tempChart"), chartCfg("Temperature (°C)", "purple"));
+  const tempChart = new Chart(document.getElementById("tempChart"), chartCfg("Temperature (°F)", "purple"));
   const humChart = new Chart(document.getElementById("humChart"), chartCfg("Humidity (%)", "blue"));
   const presChart = new Chart(document.getElementById("presChart"), chartCfg("Pressure (hPa)", "green"));
+  const anomalyChart = new Chart(document.getElementById("anomalyChart"), chartCfg("Anomaly Score", "orange"));
 
   async function fetchData() {
     try {
@@ -70,6 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const temps = rows.map(r => r.temperature);
       const hums = rows.map(r => r.humidity);
       const press = rows.map(r => r.pressure);
+      const anomaly_score = rows.map(r => r.raw_scores);
 
       // extract anomalies
       const anomTemps = rows.filter(r => r.is_anomaly)
@@ -78,6 +80,8 @@ document.addEventListener("DOMContentLoaded", () => {
         .map(r => ({ x: r.timestamp, y: r.humidity }));
       const anomPress = rows.filter(r => r.is_anomaly)
         .map(r => ({ x: r.timestamp, y: r.pressure }));
+      const anomScores = rows.filter(r => r.is_anomaly)
+        .map(r => ({ x: r.timestamp, y: r.raw_scores }));
 
       // update temp chart in-place
       tempChart.data.labels = ts;
@@ -96,6 +100,12 @@ document.addEventListener("DOMContentLoaded", () => {
       presChart.data.datasets[0].data = press;
       presChart.data.datasets[1].data = anomPress;
       presChart.update();
+
+      // update anomaly score chart
+      anomalyChart.data.labels = ts;
+      anomalyChart.data.datasets[0].data = anomaly_score;
+      anomalyChart.data.datasets[1].data = anomScores;
+      anomalyChart.update();
 
     } catch (err) {
       console.error("Error fetching /data:", err);

@@ -24,7 +24,7 @@ main {
   grid-template-rows: auto auto;
   grid-template-areas:
     "temp hum"
-    "pres .";    /* pressure spans both columns on second row */
+    "pres anom";    /* pressure spans both columns on second row */
   gap: 1.5rem;
   padding: 1rem;
   overflow-y: auto;
@@ -34,6 +34,7 @@ main {
 #tempSection { grid-area: temp; }
 #humSection  { grid-area: hum;  }
 #presSection { grid-area: pres; }
+#anomalySection { grid-area: anom; }
 
 section {
   min-height: 340px;

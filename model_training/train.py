@@ -35,7 +35,7 @@ def split_data(df: pd.DataFrame, train_size: float = 0.8) -> (pd.DataFrame, pd.D
     return train_df, test_df
 
 def train_model(train_df: pd.DataFrame) -> IsolationForest:
-    model = IsolationForest(n_estimators=100, max_samples="auto",contamination=0.012, random_state=42, n_jobs=-1)
+    model = IsolationForest(n_estimators=100, max_samples="auto",contamination=0.01, random_state=42, n_jobs=-1)
     X_df = train_df.drop(columns=["timestamp"])
     model.fit(X_df)
     return model

@@ -40,7 +40,8 @@ def start_subscriber(config, buffer):
                 temperature REAL,
                 humidity REAL,
                 pressure REAL,
-                is_anomaly INTEGER DEFAULT 0
+                is_anomaly INTEGER DEFAULT 0,
+                raw_scores REAL
             )
         ''')
         conn.commit()
@@ -67,20 +68,22 @@ def start_subscriber(config, buffer):
         }
         df_all = pd.DataFrame(list(buffer) + [entry])
         df_features = prepare_data(df_all)
-        X_all = df_features.drop(columns=["timestamp", "is_anomaly"], errors='ignore')
+        X_all = df_features.drop(columns=["timestamp", "is_anomaly", "raw_scores"], errors='ignore')
         latest = X_all.iloc[[-1]]
         pred = model.predict(latest)[0] if model else None
+        raw_scores = model.decision_function(latest)[0] if model else None
         is_anomaly = int(pred == -1) if model else None
         entry["is_anomaly"] = is_anomaly
+        entry["raw_scores"] = raw_scores
         buffer.append(entry)
         
         if config.get("terminal_output", True):
             logging.info(f"Received on {msg.topic} → {entry}")
         if config.get("log_sqlite"):
             cursor.execute('''
-                INSERT or REPLACE INTO weather_data (timestamp, temperature, humidity, pressure, is_anomaly)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (entry["timestamp"], entry["temperature"], entry["humidity"], entry["pressure"], entry["is_anomaly"]))
+                INSERT or REPLACE INTO weather_data (timestamp, temperature, humidity, pressure, is_anomaly, raw_scores)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (entry["timestamp"], entry["temperature"], entry["humidity"], entry["pressure"], entry["is_anomaly"], entry["raw_scores"]))
             conn.commit()
 
 
