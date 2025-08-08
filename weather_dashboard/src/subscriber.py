@@ -14,12 +14,12 @@ from model_training.feature_utils import prepare_data
 
 UTC = tz.tzutc()
 MST = tz.gettz("America/Phoenix")
-model_path = Path("model_training/models/isolation_forest.joblib")
-model = joblib.load(model_path) if model_path.exists() else None
 
 
 def start_subscriber(config, buffer):
     # Get the directory where the script is running from
+    model_path = Path(config.get("model_path"))
+    model = joblib.load(model_path) if model_path.exists() else None
     CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
     PROJECT_ROOT = os.path.dirname(CURRENT_DIR)  # weather-dashboard directory
     if config.get("terminal_output", True):

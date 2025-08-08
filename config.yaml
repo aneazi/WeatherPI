@@ -10,6 +10,7 @@ terminal_output: true
 
 sample_interval: 1
 db_name: "weather_anomalies.db"
+model_path: "model_training/models/isolation_forest.joblib"
 
 # OPTIONAL
 # username: "name"

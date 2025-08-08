@@ -49,9 +49,9 @@ def data():
         cursor.execute(
             """
             SELECT *
-              FROM weather_data
-             ORDER BY timestamp DESC
-             LIMIT ?
+            FROM weather_data
+            ORDER BY timestamp DESC
+            LIMIT ?
             """,
             (config["buffer_size"],)
         )

@@ -54,7 +54,7 @@ def save_model(model: IsolationForest, model_path: Path):
 def main():
     config = load_config("myconfig.yaml")
     db_path = os.path.join("weather_dashboard/data", config.get("db_name"))
-    model_path = Path("model_training/models/isolation_forest.joblib")
+    model_path = Path(config.get("model_path"))
     df = load_data(db_path)
     df = preprocess_data(df)
     train_df, _ = split_data(df, train_size=1.0)
