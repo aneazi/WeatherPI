@@ -18,7 +18,7 @@ def signal_handler(sig, frame):
 def main():
     global client
     
-    config = load_config("myconfig.yaml")
+    config = load_config("config.yaml")
     
     setup_logging()
     # Set up signal handlers

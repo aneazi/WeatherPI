@@ -52,7 +52,7 @@ def save_model(model: IsolationForest, model_path: Path):
     joblib.dump(model, model_path)
     
 def main():
-    config = load_config("myconfig.yaml")
+    config = load_config("config.yaml")
     db_path = os.path.join("weather_dashboard/data", config.get("db_name"))
     model_path = Path(config.get("model_path"))
     df = load_data(db_path)

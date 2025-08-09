@@ -9,7 +9,7 @@ import sqlite3
 # Paths
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(CURRENT_DIR)  # weather-dashboard directory
-config = load_config("myconfig.yaml")
+config = load_config("config.yaml")
 
 data_dir = os.path.join(PROJECT_ROOT, "data")
 DB_PATH = os.path.join(data_dir, config.get("db_name"))
@@ -62,14 +62,14 @@ def data():
 
 @app.route('/')
 def index():
-    return render_template('index.html', port=config.get("port", 5000))
+    return render_template('index.html', port=config.get("dashboard_port", 5000))
 
 def main():
     # Start MQTT subscriber in background
     t = Thread(target=start_subscriber, args=(config, buffer), daemon=True)
     t.start()
     # Run Flask
-    app.run(host="0.0.0.0", port=config.get("port", 5000))
+    app.run(host="0.0.0.0", port=config.get("dashboard_port", 5000))
 
 if __name__ == "__main__":
     main()
