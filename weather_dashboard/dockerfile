@@ -1,0 +1,43 @@
+# weather_dashboard/Dockerfile
+FROM python:3.12-slim
+
+# Minimal OS deps for scientific Python wheels (scikit-learn needs libgomp)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python runtime tweaks
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app
+
+# Workdir at repo root inside the container to keep imports simple
+WORKDIR /app
+
+# Copy only requirements first for better layer caching
+COPY requirements.txt /app/requirements.txt
+
+# Install deps (no cache, no compiling if wheels exist)
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+# Copy ONLY what the dashboard needs (plus the model + utils)
+# Adjust if you later want to include more/less.
+COPY model_training /app/model_training
+COPY weather_dashboard /app/weather_dashboard
+
+# Make sure the data dir exists (you'll likely mount it)
+RUN mkdir -p /app/weather_dashboard/data
+
+# Expose Flask port
+EXPOSE 8000
+
+# Default config file path (override via -e if needed)
+# e.g., -e CONFIG=myconfig.yaml
+COPY myconfig.yaml /app/weather_dashboard/src/myconfig.yaml
+ENV CONFIG=/app/weather_dashboard/src/myconfig.yaml
+
+# Set working dir to the dashboard source
+WORKDIR /app/weather_dashboard/src
+
+# If server.py reads config from CWD, we're good. Otherwise pass via env/args.
+CMD ["python", "-u", "server.py"]
