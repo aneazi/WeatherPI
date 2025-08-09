@@ -19,7 +19,7 @@ How to build publisher container (from project root dir):
 ```
 docker build \
   -t pi_publisher:latest \
-  -f pi_publisher/Dockerfile \
+  -f pi_publisher/dockerfile \
   .
 ```
 
