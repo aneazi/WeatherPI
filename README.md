@@ -1,4 +1,4 @@
-# WeatherPI
+# WeatherSense
 This project is made for detecting weather anomalies by making use of the Raspberry Pi Sense HAT and a lightweight Isolation Forest for realtime anomaly detection. 
 
 The Raspberry Pi communicates with the local device by using MQTT as a pub/sub service. I used scikit-learn to create my Isolation Forest with a latency of around 5 ms. I also used Chart.js for tracking current temperature, humidity, and pressure. 
